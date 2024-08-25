@@ -19,10 +19,13 @@ class Cell:
         self.neighbours = []
         neighbours_coordinates = [(self.i, self.j+1), (self.i, self.j-1), (self.i-1, self.j), (self.i-1, self.j+1),
                                   (self.i-1, self.j-1), (self.i+1, self.j), (self.i+1, self.j-1), (self.i+1, self.j+1)]
+        len_x = len(grid)
+        len_y = len(grid[0])
         for coordinate in neighbours_coordinates:
             try:
-                if grid[coordinate[0]][coordinate[1]]:
-                    self.neighbours.append(grid[coordinate[0]][coordinate[1]])
+                if grid[coordinate[0] % len_x][coordinate[1] % len_y]:
+                    self.neighbours.append(
+                        grid[coordinate[0] % len_x][coordinate[1] % len_y])
             except:
                 pass
 
