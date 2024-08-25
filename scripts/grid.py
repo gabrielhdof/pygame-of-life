@@ -46,11 +46,11 @@ class Grid:
                 cell.draw(surface, alive_color, dead_color)
 
     def click(self, mouse_pos):
-        cell = self.get_cell(mouse_pos)
+        cell = self.cell_from_mouse_pos(mouse_pos)
         cell.alive = not cell.alive
 
     def holding(self, mouse_pos):
-        cell_in_pos = self.get_cell(mouse_pos)
+        cell_in_pos = self.cell_from_mouse_pos(mouse_pos)
 
         if self.last_held_cell is None:
             cell_in_pos.alive = not cell_in_pos.alive
@@ -61,7 +61,7 @@ class Grid:
             cell_in_pos.alive = self.last_held_cell.alive
             self.last_held_cell = cell_in_pos
 
-    def get_cell(self, mouse_pos):
+    def cell_from_mouse_pos(self, mouse_pos):
         for row in self.grid:
             for cell in row:
                 if cell.rect.collidepoint(mouse_pos):
