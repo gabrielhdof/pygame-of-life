@@ -24,14 +24,15 @@ class Game:
 
         self.clock = pygame.time.Clock()
 
-        self.main_font = pygame.font.SysFont("Consolas", self.BLOCK_SIZE * 2)
+        self.main_font = pygame.font.SysFont(
+            "Courier New", int(self.BLOCK_SIZE * 1.2), bold=True)
         self.bg_music = pygame.mixer.Sound(r"assets/sounds/bgmusic2.mp3")
 
         self.generate = False
         self.generation = -1
 
-        self.main_color = "black"
-        self.secondary_color = "white"
+        self.main_color = "white"
+        self.secondary_color = "black"
 
         self.is_mb1_down = False
 
@@ -61,17 +62,14 @@ class Game:
 
         # 031c29
         for i in range(x):
-            pygame.draw.line(self.screen, "darkgrey", (i * self.BLOCK_SIZE,
+            pygame.draw.line(self.screen, "grey24", (i * self.BLOCK_SIZE,
                              0), (i * self.BLOCK_SIZE, self.HEIGTH), 2)
         for i in range(y):
-            pygame.draw.line(self.screen, "darkgrey", (0, i *
+            pygame.draw.line(self.screen, "grey24", (0, i *
                              self.BLOCK_SIZE), (self.WIDTH, i * self.BLOCK_SIZE), 2)
 
     def draw_text(self):
-        if self.generate:
-            text1 = "JOGO RODANDO"
-        else:
-            text1 = "JOGO PAUSADO"
+        text1 = "JOGO RODANDO" if self.generate else "JOGO PAUSADO"
 
         draw_text(self.screen, text1, self.WIDTH//2,
                   self.BLOCK_SIZE * 4, self.main_color, self.main_font)
@@ -80,7 +78,7 @@ class Game:
         draw_text(self.screen, f"POPULAÇÃO: {
                   self.grid.alive_cells}", self.BLOCK_SIZE * 8, self.BLOCK_SIZE * 8, self.main_color, self.main_font)
         draw_text(self.screen, f"VELOCIDADE: {
-                  self.speed}", self.WIDTH - self.BLOCK_SIZE * 10, self.BLOCK_SIZE * 8, self.main_color, self.main_font)
+                  self.speed}", self.WIDTH - self.BLOCK_SIZE * 8, self.BLOCK_SIZE * 4, self.main_color, self.main_font)
 
     def handle_events(self):
         for event in pygame.event.get():
@@ -105,7 +103,7 @@ class Game:
             self.on_hold_cancel()
             self.is_mb1_down = False
 
-        if self.is_mb1_down:
+        if self.is_mb1_down and hasattr(event, 'pos'):
             self.on_hold(event.pos)
 
     def restart_game(self):
