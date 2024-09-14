@@ -12,14 +12,20 @@ class Game:
         pygame.init()
         pygame.display.set_caption("pygame of life")
         
-        self.WIDTH, self.HEIGTH = 1000, 800
+        
+        self.D_W, self.D_H = 1000, 800
+        self.WIDTH, self.HEIGTH = self.D_W * 3, self.D_H * 3
         self.BLOCK_SIZE = 20
         self.FRAME_RATE = 30
-        self.speed = 10
+        self.speed = 20
+        self.grid_speed = 20
         
-        self.display = pygame.display.set_mode((self.WIDTH, self.HEIGTH))
+        self.display = pygame.display.set_mode((self.D_W, self.D_H))
         self.screen = pygame.Surface((self.WIDTH, self.HEIGTH))
-        self.screen_rect = self.screen.get_rect()
+        self.screen_rect = [self.screen.get_rect()[0] - self.D_W, self.screen.get_rect()[1] - self.D_H]
+        self.screen_moved = [-self.D_W, self.D_H]
+        self.screen_y_movement = [False, False]
+        self.screen_x_movement = [False, False]
         
         self.clock = pygame.time.Clock()
         
@@ -48,7 +54,7 @@ class Game:
         self.grid.draw_grid(self.screen, self.main_color, self.secondary_color)
 
     def on_click(self, mouse_pos):
-        self.grid.click(mouse_pos)
+        self.grid.click((mouse_pos[0] - self.screen_moved[0], mouse_pos[1] + self.screen_moved[1]))
 
     def draw_lines_grid(self):
         x = self.WIDTH // self.BLOCK_SIZE
@@ -66,13 +72,14 @@ class Game:
         else:
             text1 = "JOGO PAUSADO"
         
-        draw_text(self.screen, text1, self.WIDTH//2, self.BLOCK_SIZE * 4, self.main_color, self.main_font)
-        draw_text(self.screen, f"GERAÇÃO: {self.generation}", self.BLOCK_SIZE * 7, self.BLOCK_SIZE * 4, self.main_color, self.main_font)
-        draw_text(self.screen, f"POPULAÇÃO: {self.grid.alive_cells}", self.BLOCK_SIZE * 8, self.BLOCK_SIZE * 8, self.main_color, self.main_font)
-        draw_text(self.screen, f"VELOCIDADE: {self.speed}", self.WIDTH - self.BLOCK_SIZE * 10, self.BLOCK_SIZE * 8, self.main_color, self.main_font)
+        draw_text(self.display, text1, self.D_W//2, self.BLOCK_SIZE * 4, self.main_color, self.main_font)
+        draw_text(self.display, f"GERAÇÃO: {self.generation}", self.BLOCK_SIZE * 7, self.BLOCK_SIZE * 4, self.main_color, self.main_font)
+        draw_text(self.display, f"POPULAÇÃO: {self.grid.alive_cells}", self.BLOCK_SIZE * 8, self.BLOCK_SIZE * 8, self.main_color, self.main_font)
+        draw_text(self.display, f"VELOCIDADE: {self.speed}", self.D_W - self.BLOCK_SIZE * 10, self.BLOCK_SIZE * 8, self.main_color, self.main_font)
         
 
     def handle_events(self):
+        
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -88,8 +95,35 @@ class Game:
                     self.speed += 1
                 if event.key == pygame.K_ESCAPE:
                     self.restart_game()
-                
 
+                if event.key == pygame.K_w:
+                    self.screen_y_movement[0] = True
+                if event.key == pygame.K_s:
+                    self.screen_y_movement[1] = True
+                if event.key == pygame.K_a:
+                    self.screen_x_movement[0] = True
+                if event.key == pygame.K_d:
+                    self.screen_x_movement[1] = True
+            elif event.type == pygame.KEYUP:
+                if event.key == pygame.K_w:
+                    self.screen_y_movement[0] = False
+                if event.key == pygame.K_s:
+                    self.screen_y_movement[1] = False
+                if event.key == pygame.K_a:
+                    self.screen_x_movement[0] = False
+                if event.key == pygame.K_d:
+                    self.screen_x_movement[1] = False
+
+    def move_grid(self):
+        
+        move_greed_speed = self.grid_speed * (30 / self.FRAME_RATE)
+        if self.screen_y_movement[0] == True or self.screen_y_movement[1] == True:
+            self.screen_moved[1] += (self.screen_y_movement[1] - self.screen_y_movement[0]) * move_greed_speed
+            self.screen_rect[1] -= (self.screen_y_movement[1] - self.screen_y_movement[0]) * move_greed_speed
+        if self.screen_x_movement[0] == True or self.screen_x_movement[1] == True:
+            self.screen_moved[0] -= (self.screen_x_movement[1] - self.screen_x_movement[0]) * move_greed_speed
+            self.screen_rect[0] -= (self.screen_x_movement[1] - self.screen_x_movement[0]) * move_greed_speed
+            
     def restart_game(self):
         self.generate_grid()
         self.generation = 0
@@ -106,8 +140,9 @@ class Game:
         self.bg_music.play(-1)
 
         while True:
-            # self.screen.fill("#FFFFFF")
+            self.display.fill("#FFFFFF")
             self.handle_events()
+            self.move_grid()
 
             if self.generate:
                 self.update_grid()
@@ -117,11 +152,14 @@ class Game:
 
             self.draw_grid()
             self.draw_lines_grid()
-            self.draw_text()
+            
             
             self.display.blit(self.screen, self.screen_rect)
+            self.draw_text()
             pygame.display.update()
             self.clock.tick(self.FRAME_RATE)
+
+
 
 
 Game().run()
