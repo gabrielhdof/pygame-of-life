@@ -4,3 +4,10 @@ Pygame implementation of Conway's game of life
 
 # How to play
 Press SPACE to alternate between insertion mode and generation mode. Press ESC to restart the grid, and use UP and DOWN arrows to change the speed of simulations, use WASD keys to move the grid around.
+
+# Setup
+run the following command:
+```
+pip install -r requirements.txt
+```
+
