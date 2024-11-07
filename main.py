@@ -34,7 +34,7 @@ class Game:
         if platform == 'win32':
             self.bg_path = r"assets\sounds\bgmusic2.mp3"
         else:
-            self.bg_path = r"assets\sounds\bgmusic2.mp3"
+            self.bg_path = r"assets/sounds/bgmusic2.mp3"
             
         self.bg_music = pygame.mixer.Sound(self.bg_path)
 
