@@ -1,5 +1,5 @@
 import pygame
-from sys import exit
+from sys import exit, platform
 
 import pygame.freetype
 
@@ -29,9 +29,14 @@ class Game:
         
         self.clock = pygame.time.Clock()
         
-        
         self.main_font = pygame.font.SysFont("Consolas", self.BLOCK_SIZE * 2)
-        self.bg_music = pygame.mixer.Sound(r"assets\sounds\bgmusic2.mp3")
+        
+        if platform == 'win32':
+            self.bg_path = r"assets\sounds\bgmusic2.mp3"
+        else:
+            self.bg_path = r"assets\sounds\bgmusic2.mp3"
+            
+        self.bg_music = pygame.mixer.Sound(self.bg_path)
 
         self.generate = False
         self.generation = -1
